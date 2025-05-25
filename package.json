@@ -1,10 +1,10 @@
 {
   "name": "foodsy-server",
   "version": "1.0.0",
-  "description": "Foodsy Server - Layered Architecture Boilerplate with Pure Node.js",
+  "description": "Foodsy Server",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "npx ts-node src/index.ts",
+    "dev": "tsx watch src/index.ts",
     "build": "npx tsc",
     "start": "node dist/index.js",
     "clean": "rm -rf dist"
@@ -23,6 +23,6 @@
     "typescript": "^5.8.2"
   },
   "devDependencies": {
-    "ts-node": "^10.9.1"
+    "tsx": "^4.19.4"
   }
 }
