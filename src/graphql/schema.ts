@@ -1,0 +1,204 @@
+import { buildSchema } from "graphql";
+
+export const schema = buildSchema(`
+  # 공통 타입
+  input PaginationInput {
+    page: Int = 1
+    limit: Int = 10
+  }
+
+  # User 관련 타입들
+  enum GenderType {
+    male
+    female
+    unknown
+  }
+
+  input CreateUserInput {
+    username: String!
+    email: String!
+    password: String!
+    phoneNumber: String
+    firstName: String
+    lastName: String
+    bio: String
+    profilePicture: String
+    gender: GenderType
+    dateOfBirth: String
+  }
+
+  input UpdateUserInput {
+    email: String
+    phoneNumber: String
+    firstName: String
+    lastName: String
+    bio: String
+    profilePicture: String
+    gender: GenderType
+    dateOfBirth: String
+  }
+
+  type User {
+    username: String!
+    email: String!
+    phoneNumber: String
+    firstName: String
+    lastName: String
+    fullName: String!
+    bio: String
+    profilePicture: String
+    gender: GenderType!
+    dateOfBirth: String
+    age: Int
+    isAdult: Boolean!
+    createdAt: String!
+    updatedAt: String!
+    
+    # Follow 관련 필드들
+    followersCount: Int!
+    followingCount: Int!
+    isFollowedByMe: Boolean!
+    isFollowingMe: Boolean!
+    isMutualFollow: Boolean!
+  }
+
+  type PaginatedUsers {
+    data: [User!]!
+    total: Int!
+    page: Int!
+    limit: Int!
+    hasNext: Boolean!
+  }
+
+  # Post 관련 타입들
+  input CreatePostInput {
+    title: String
+    content: String!
+    medias: [String!]
+    calorie: Int
+  }
+
+  input UpdatePostInput {
+    title: String
+    content: String
+    medias: [String!]
+    calorie: Int
+  }
+
+  input PostFiltersInput {
+    userId: String
+    hasMedia: Boolean
+    minCalorie: Int
+    maxCalorie: Int
+    isHealthy: Boolean
+  }
+
+  enum CalorieLevel {
+    LOW
+    MEDIUM
+    HIGH
+    UNKNOWN
+  }
+
+  type Post {
+    id: ID!
+    userId: String!
+    title: String
+    content: String!
+    medias: [String!]!
+    calorie: Int
+    createdAt: String!
+    updatedAt: String!
+    
+    # 계산된 필드들
+    author: User!
+    likeCount: Int!
+    isLikedByMe: Boolean!
+    commentCount: Int!
+    mediaCount: Int!
+    isHealthy: Boolean!
+    calorieLevel: CalorieLevel!
+    summary: String!
+    timeAgo: String!
+  }
+
+  type PaginatedPosts {
+    data: [Post!]!
+    total: Int!
+    page: Int!
+    limit: Int!
+    hasNext: Boolean!
+  }
+
+  # Follow 관련 타입들
+  type FollowStats {
+    followingCount: Int!
+    followersCount: Int!
+    mutualFollowsCount: Int!
+  }
+
+  # 응답 타입들
+  type ServiceResponse {
+    success: Boolean!
+    message: String!
+    data: User
+  }
+
+  type PostResponse {
+    success: Boolean!
+    message: String!
+    data: Post
+  }
+
+  type BooleanResponse {
+    success: Boolean!
+    message: String!
+    data: Boolean
+  }
+
+  # 쿼리
+  type Query {
+    # User 쿼리
+    me: User
+    user(username: String!): User
+    users(pagination: PaginationInput!): PaginatedUsers!
+    searchUsers(query: String!, pagination: PaginationInput!): PaginatedUsers!
+    
+    # Post 쿼리
+    post(id: Int!): Post
+    posts(pagination: PaginationInput!, filters: PostFiltersInput): PaginatedPosts!
+    userPosts(userId: String!, pagination: PaginationInput!): PaginatedPosts!
+    healthyPosts(pagination: PaginationInput!): PaginatedPosts!
+    myPosts(pagination: PaginationInput!): PaginatedPosts!
+    
+    # Follow 쿼리
+    followers(userId: String!, pagination: PaginationInput!): PaginatedUsers!
+    following(userId: String!, pagination: PaginationInput!): PaginatedUsers!
+    myFollowers(pagination: PaginationInput!): PaginatedUsers!
+    myFollowing(pagination: PaginationInput!): PaginatedUsers!
+    followStats(userId: String!): FollowStats!
+    myFollowStats: FollowStats!
+    mutualFollows(userId1: String!, userId2: String!): [User!]!
+    followSuggestions(limit: Int): [User!]!
+    isFollowing(followingUserId: String!, followedUserId: String!): Boolean!
+    amIFollowing(userId: String!): Boolean!
+  }
+
+  # 뮤테이션
+  type Mutation {
+    # User 뮤테이션
+    createUser(userData: CreateUserInput!): ServiceResponse!
+    updateUser(userData: UpdateUserInput!): ServiceResponse!
+    deleteUser: ServiceResponse!
+    
+    # Post 뮤테이션
+    createPost(postData: CreatePostInput!): PostResponse!
+    updatePost(id: Int!, postData: UpdatePostInput!): PostResponse!
+    deletePost(id: Int!): BooleanResponse!
+    
+    # Follow 뮤테이션
+    followUser(userId: String!): ServiceResponse!
+    unfollowUser(userId: String!): BooleanResponse!
+    removeFollower(followerId: String!): BooleanResponse!
+  }
+`);
