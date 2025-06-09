@@ -22,12 +22,12 @@
   "license": "ISC",
   "packageManager": "pnpm@10.4.1",
   "dependencies": {
-    "@types/node": "^22.15.21",
-    "@types/pg": "^8.15.2",
+    "@types/node": "^22.15.30",
+    "@types/pg": "^8.15.4",
     "dotenv": "^16.5.0",
     "graphql": "^16.11.0",
     "pg": "^8.16.0",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.3"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
